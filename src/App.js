@@ -1,6 +1,6 @@
 import "./App.css";
-import { Header } from "./Header/Header";
-import { TaskForm } from "./TaskForm/TaskForm";
+import { Header } from "./components/Header/Header";
+import { TaskForm } from "./components/TaskForm/TaskForm";
 
 function App() {
   return (

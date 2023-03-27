@@ -43,3 +43,24 @@ li {
   text-align: left;
   font-weight: normal;
 }
+
+.checked {
+  color: gray;
+  text-decoration:  line-through;;
+}
+
+.settingBtns {
+  cursor: pointer;
+  gap: 5px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+.item-title {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}

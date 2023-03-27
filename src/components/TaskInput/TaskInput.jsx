@@ -17,7 +17,7 @@ export const TaskInput = ({ onAddTask }) => {
           <Add
             className="addIcon"
             onClick={() => {
-              onAddTask(title);
+              title && onAddTask(title);
               setTitle("");
             }}
           />
