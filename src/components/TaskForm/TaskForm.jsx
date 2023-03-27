@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { API_URL } from "../../utils/constants";
 import { TaskInput } from "../TaskInput/TaskInput";
 import { ToDoDisplay } from "../ToDoDisplay/ToDoDisplay";
+import { useQuery } from "@tanstack/react-query";
 
 const emptyTask = {
   id: 0,
@@ -13,15 +14,18 @@ const emptyTask = {
 };
 
 export const TaskForm = () => {
-  const [collection, setCollection] = useState([]);
-  useEffect(() => {
-    fetchData();
-  }, []);
-
   const fetchData = () =>
-    fetch(`${API_URL}toDoItems`)
-      .then((resp) => resp.json())
-      .then(setCollection);
+    fetch(`${API_URL}toDoItems`).then((resp) => resp.json());
+
+  const {
+    isLoading,
+    error,
+    data: collection = [],
+    isFetching,
+  } = useQuery({
+    queryKey: ["allToDos"],
+    queryFn: fetchData,
+  });
 
   return (
     <div>
@@ -41,7 +45,7 @@ export const TaskForm = () => {
             },
           })
             .then((resp) => resp.json())
-            .then((newItem) => setCollection([...collection, newItem]));
+            .then((newItem) => [...collection, newItem]);
         }}
       />
       <ToDoDisplay
