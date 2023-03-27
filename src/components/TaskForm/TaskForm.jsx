@@ -1,8 +1,12 @@
 import React from "react";
-import { API_URL } from "../../utils/constants";
 import { TaskInput } from "../TaskInput/TaskInput";
 import { ToDoDisplay } from "../ToDoDisplay/ToDoDisplay";
-import { useQuery } from "@tanstack/react-query";
+import { useQueryAllToDos } from "../../hooks/useQueryAllToDos";
+import { useCreateToDo } from "../../hooks/useCreateToDo";
+import { useCompleteTask } from "../../hooks/useCompleteTask";
+import { useDeleteTask } from "../../hooks/useDeleteTask";
+import { useEditTitle } from "../../hooks/useEditTitle";
+import { format } from "date-fns";
 
 const emptyTask = {
   id: 0,
@@ -14,18 +18,12 @@ const emptyTask = {
 };
 
 export const TaskForm = () => {
-  const fetchData = () =>
-    fetch(`${API_URL}toDoItems`).then((resp) => resp.json());
-
-  const {
-    isLoading,
-    error,
-    data: collection = [],
-    isFetching,
-  } = useQuery({
-    queryKey: ["allToDos"],
-    queryFn: fetchData,
-  });
+  const { data: collection = [], refetch: refetchAllToDos } =
+    useQueryAllToDos();
+  const { mutate: createTask } = useCreateToDo();
+  const { mutate: completeTaskToggle } = useCompleteTask();
+  const { mutate: deleteTask } = useDeleteTask();
+  const { mutate: editTitle } = useEditTitle();
 
   return (
     <div>
@@ -36,16 +34,7 @@ export const TaskForm = () => {
             title: itemTitle,
             created_date: new Date(),
           };
-
-          fetch(`${API_URL}toDoItems`, {
-            method: "POST",
-            body: JSON.stringify(newItem),
-            headers: {
-              "Content-Type": "application/json",
-            },
-          })
-            .then((resp) => resp.json())
-            .then((newItem) => [...collection, newItem]);
+          createTask(newItem, { onSuccess: refetchAllToDos });
         }}
       />
       <ToDoDisplay
@@ -55,37 +44,22 @@ export const TaskForm = () => {
           const checked = {
             ...itemToUpdate,
             completed: !itemToUpdate.completed,
+            completed_date: !itemToUpdate.completed ? new Date() : "",
           };
-          fetch(`${API_URL}toDoItems/${toggledId}`, {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(checked),
-          }).then(fetchData);
+          completeTaskToggle(
+            { checked, toggledId },
+            { onSuccess: refetchAllToDos }
+          );
         }}
         onDelete={(toggledId) => {
-          fetch(`${API_URL}toDoItems/${toggledId}`, {
-            method: "DELETE",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          })
-            .catch((err) => console.error(err, "failed to delete"))
-            .then(fetchData);
+          deleteTask(toggledId, { onSuccess: refetchAllToDos });
         }}
         onEditTitle={(newTitle, id) => {
           const editedItem = {
             ...collection.find((item) => item.id === id),
             title: newTitle,
           };
-          fetch(`${API_URL}toDoItems/${id}`, {
-            method: "PUT",
-            body: JSON.stringify(editedItem),
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }).then(fetchData);
+          editTitle(editedItem, { onSuccess: refetchAllToDos });
         }}
       />
     </div>

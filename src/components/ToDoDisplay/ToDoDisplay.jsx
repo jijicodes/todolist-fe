@@ -26,6 +26,7 @@ export const ToDoDisplay = ({
 
           <div className="settingBtns">
             <input
+              readOnly
               type="checkbox"
               checked={completed}
               onClick={() => {
