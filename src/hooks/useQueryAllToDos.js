@@ -1,23 +1,15 @@
 import { useQuery } from "@tanstack/react-query";
-// import { useEffect, useState } from "react";
 import { API_URL } from "../utils/constants";
 
-const fetchData = () =>
-  fetch(`${API_URL}toDoItems`).then((resp) => resp.json());
-
-export const useQueryAllToDos = () =>
+export const useQueryAllToDos = (onlyInProgressTasks) =>
   useQuery({
-    queryKey: ["allToDos"],
-    queryFn: fetchData,
+    queryKey: ["allToDos", onlyInProgressTasks],
+    queryFn: () => fetchCompletedData(onlyInProgressTasks),
   });
 
-// export const useQueryAllToDos = () => {
-//   const [data, setData] = useState(undefined);
-
-//   useEffect(() => {
-//     fetchData().then(setData);
-//   }, []);
-
-//   return { data,
-//     refetch: () => fetchData().then(setData) };
-// };
+const fetchCompletedData = (onlyInProgressTasks) =>
+  fetch(
+    onlyInProgressTasks
+      ? `${API_URL}toDoItems?completed=false`
+      : `${API_URL}toDoItems`
+  ).then((resp) => resp.json());

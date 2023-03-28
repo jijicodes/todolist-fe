@@ -1,12 +1,12 @@
 .App, html {
   margin: auto;
   text-align: center;
-  padding: 10px;
+  padding-top: 15px;
   font-size: 30px;
   font-weight: bold;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 29px;
   width: 60vw;
 }
 
@@ -16,7 +16,11 @@
   border: 1px solid;
   justify-content: space-between;
   align-items: center;
+}
 
+.hide {
+  display: flex;
+  justify-content: right;
 }
 
 .input {
@@ -25,10 +29,11 @@
   width:60vw;
 }
 
+
 .addIcon {
   cursor: pointer;
   border-left: none;
-  border: none
+  border: none;
 }
 
 .item {
@@ -36,7 +41,10 @@
   align-items: center;
   flex-direction: row;  
   justify-content: space-between;
+  gap: 10px;
+  padding-left: 0.5rem;
 }
+
 
 li {
   font-size: 15px;

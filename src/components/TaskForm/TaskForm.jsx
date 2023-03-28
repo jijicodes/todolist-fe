@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { TaskInput } from "../TaskInput/TaskInput";
 import { ToDoDisplay } from "../ToDoDisplay/ToDoDisplay";
 import { useQueryAllToDos } from "../../hooks/useQueryAllToDos";
@@ -6,7 +6,7 @@ import { useCreateToDo } from "../../hooks/useCreateToDo";
 import { useCompleteTask } from "../../hooks/useCompleteTask";
 import { useDeleteTask } from "../../hooks/useDeleteTask";
 import { useEditTitle } from "../../hooks/useEditTitle";
-import { format } from "date-fns";
+import { HideCompleted } from "../HideCompleted/HideCompleted";
 
 const emptyTask = {
   id: 0,
@@ -18,13 +18,14 @@ const emptyTask = {
 };
 
 export const TaskForm = () => {
+  const [displayInProgress, setDisplayInProgress] = useState(false);
   const { data: collection = [], refetch: refetchAllToDos } =
-    useQueryAllToDos();
+    useQueryAllToDos(displayInProgress);
   const { mutate: createTask } = useCreateToDo();
   const { mutate: completeTaskToggle } = useCompleteTask();
   const { mutate: deleteTask } = useDeleteTask();
   const { mutate: editTitle } = useEditTitle();
-
+  console.log(collection);
   return (
     <div>
       <TaskInput
@@ -37,6 +38,14 @@ export const TaskForm = () => {
           createTask(newItem, { onSuccess: refetchAllToDos });
         }}
       />
+      <div className="hide">
+        <HideCompleted
+          OnHideCompleted={(e) => {
+            setDisplayInProgress(() => !e);
+          }}
+        />
+      </div>
+
       <ToDoDisplay
         listItems={collection}
         onCheckedBox={(toggledId) => {

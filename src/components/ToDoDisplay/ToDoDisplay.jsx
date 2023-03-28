@@ -14,7 +14,7 @@ export const ToDoDisplay = ({
         key={id}
         style={{ textDecoration: completed ? "line-through" : "none" }}
       >
-        <ul className="item">
+        <ul className="item" style={{ paddingLeft: "none" }}>
           <li>
             <EditTitle
               title={title}
